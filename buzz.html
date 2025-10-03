@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fast Finger Response - Buzz In</title>
+    <link rel="stylesheet" href="/static/style.css?v=20250922189000">
+    
+    <!-- Enhanced responsive buzz page styles -->
+    <style>
+        /* Enhanced buzz page responsiveness */
+        .buzz-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--info-color));
+            box-shadow: var(--shadow-md);
+        }
+        
+        .buzz-header h1 {
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .buzz-header .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .buzz-header .logo {
+            filter: brightness(0) invert(1);
+            position: fixed;
+            top: 10px;
+            left: 15px;
+            z-index: 1000;
+        }
+        
+        /* Mobile logo positioning */
+        @media (max-width: 768px) {
+            .buzz-header .logo {
+                height: 30px;
+                top: 8px;
+                left: 12px;
+            }
+            
+            .buzz-header .header-text {
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%);
+                text-align: center;
+                top: 50%;
+                transform: translate(-50%, -50%);
+            }
+            
+            .buzz-header h1 {
+                font-size: 1.5rem;
+                margin: 0;
+            }
+            
+            .buzz-header .subtitle {
+                font-size: 0.9rem;
+                margin: 0;
+            }
+            
+            /* Fix mobile overlaps */
+            .game-status-display {
+                top: 80px;
+                left: 12px;
+                max-width: 150px;
+            }
+            
+            .fullscreen-toggle {
+                position: fixed;
+                top: 8px;
+                right: 12px;
+                z-index: 1001;
+                padding: 8px 12px;
+                min-width: 50px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .buzz-header .logo {
+                height: 25px;
+                top: 6px;
+                left: 10px;
+            }
+            
+            .buzz-header .header-text {
+                position: absolute;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                text-align: center;
+                top: 50%;
+            }
+            
+            .buzz-header h1 {
+                font-size: 1.2rem;
+                margin: 0;
+            }
+            
+            .buzz-header .subtitle {
+                font-size: 0.8rem;
+                margin: 0;
+            }
+            
+            /* Fix mobile overlaps */
+            .game-status-display {
+                top: 70px;
+                left: 10px;
+                max-width: 120px;
+            }
+            
+            .fullscreen-toggle {
+                position: fixed;
+                top: 6px;
+                right: 10px;
+                z-index: 1001;
+                padding: 6px 10px;
+                min-width: 45px;
+            }
+        }
+        
+        /* Enhanced fullscreen toggle */
+        .fullscreen-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            min-width: 60px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            top: 10px;
+            right: 15px;
+            z-index: 1001;
+        }
+        
+        .fullscreen-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+        
+        .fullscreen-toggle svg {
+            width: 20px;
+            height: 20px;
+        }
+        
+        /* Fixed status indicator positioning */
+        .game-status-display {
+            position: fixed;
+            top: 80px;
+            left: var(--spacing-md);
+            z-index: 1000;
+            max-width: 200px;
+            pointer-events: none;
+        }
+        
+        .status-indicator {
+            background: rgba(40, 167, 69, 0.95);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-sm);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            color: white;
+            pointer-events: auto;
+        }
+        
+        .game-status {
+            margin-top: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--border-radius-lg);
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            text-align: center;
+            background: rgba(40, 167, 69, 0.95);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        /* Enhanced single team display responsiveness */
+        @media (max-width: 639px) {
+            .single-team-display {
+                gap: var(--spacing-lg);
+                padding: var(--spacing-lg);
+                margin-top: 120px; /* Add space for fixed elements */
+            }
+            
+            .team-name-display {
+                font-size: clamp(2rem, 8vw, 3rem);
+            }
+            
+            .single-team-btn {
+                padding: var(--spacing-lg) var(--spacing-xl);
+                font-size: clamp(1.25rem, 4vw, 1.5rem);
+                min-width: 180px;
+            }
+            
+            .team-buttons-large {
+                margin-top: 120px; /* Add space for fixed elements */
+            }
+            
+            .buzz-instructions {
+                margin-top: var(--spacing-md);
+            }
+        }
+        
+        /* Desktop spacing adjustments */
+        @media (min-width: 640px) {
+            .single-team-display {
+                margin-top: 120px; /* Add space for fixed elements */
+            }
+            
+            .team-buttons-large {
+                margin-top: 120px; /* Add space for fixed elements */
+            }
+        }
+        
+        @media (min-width: 640px) {
+            .single-team-display {
+                gap: var(--spacing-xxl);
+                padding: var(--spacing-xxl) var(--spacing-xl);
+            }
+        }
+        
+        /* Enhanced team buttons large responsiveness */
+        @media (max-width: 639px) {
+            .team-buttons-large {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-md);
+                padding: 0 var(--spacing-md);
+            }
+            
+            .team-btn-large {
+                padding: var(--spacing-lg);
+                font-size: var(--font-size-lg);
+                min-height: var(--touch-target);
+            }
+        }
+        
+        @media (min-width: 640px) and (max-width: 1023px) {
+            .team-buttons-large {
+                grid-template-columns: repeat(2, 1fr);
+                gap: var(--spacing-lg);
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .team-buttons-large {
+                grid-template-columns: repeat(3, 1fr);
+                gap: var(--spacing-xl);
+            }
+        }
+        
+        /* Enhanced buzz instructions */
+        .buzz-instructions {
+            text-align: center;
+            margin-top: var(--spacing-lg);
+            padding: var(--spacing-md);
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: var(--border-radius-lg);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .buzz-instructions p {
+            margin-bottom: var(--spacing-sm);
+            font-size: var(--font-size-base);
+            color: var(--text-primary);
+        }
+        
+        .small-text {
+            font-size: var(--font-size-sm) !important;
+            color: var(--text-secondary);
+        }
+        
+        /* Enhanced footer */
+        .buzz-footer {
+            text-align: center;
+            padding: var(--spacing-lg) var(--spacing-xl);
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.9);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+        
+        .connection-status {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius-lg);
+            font-size: var(--font-size-sm);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--secondary-color);
+            transition: background 0.3s ease;
+        }
+        
+        .connection-status.connected .status-dot {
+            background: var(--success-color);
+        }
+        
+        .connection-status.connecting .status-dot {
+            background: var(--warning-color);
+            animation: pulse 1s ease-in-out infinite;
+        }
+        
+        .connection-status.disconnected .status-dot {
+            background: var(--danger-color);
+        }
+        
+        /* Enhanced touch interactions for mobile */
+        @media (hover: none) and (pointer: coarse) {
+            .team-btn-large:hover,
+            .single-team-btn:hover {
+                transform: none;
+            }
+            
+            .team-btn-large:active,
+            .single-team-btn:active {
+                transform: scale(0.95);
+            }
+        }
+        
+        /* Landscape orientation adjustments */
+        @media (orientation: landscape) and (max-height: 500px) {
+            .buzz-header {
+                padding: var(--spacing-sm) var(--spacing-lg);
+            }
+            
+            .buzz-main {
+                gap: var(--spacing-lg);
+                padding: var(--spacing-sm);
+            }
+            
+            .team-buttons-large {
+                grid-template-columns: repeat(3, 1fr);
+                gap: var(--spacing-sm);
+            }
+            
+            .team-btn-large {
+                padding: var(--spacing-md);
+                font-size: var(--font-size-lg);
+            }
+            
+            .single-team-display {
+                gap: var(--spacing-lg);
+                padding: var(--spacing-lg);
+            }
+            
+            .single-team-btn {
+                padding: var(--spacing-lg) var(--spacing-xl);
+                font-size: var(--font-size-xl);
+            }
+            
+            .game-status-display {
+                top: var(--spacing-xs);
+                left: var(--spacing-xs);
+                max-width: 120px;
+            }
+        }
+    </style>
+</head>
+<body class="buzz-body">
+    <div class="buzz-container">
+        <header class="buzz-header">
+            <div class="header-content">
+                <img src="/static/secure-logo.png" alt="Secure Meters" class="logo">
+                <div class="header-text">
+                    <h1>Fast Finger Response</h1>
+                    <p class="subtitle">Buzz In</p>
+                </div>
+                <button class="fullscreen-toggle" id="fullscreen-toggle" title="Toggle Fullscreen">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <div class="buzz-main">
+            <div class="game-status-display">
+                <div class="game-status" id="game-status"></div>
+            </div>
+
+            <!-- All Teams Display -->
+            <div class="team-buttons-large" id="team-buttons">
+                <button class="team-btn-large" data-team="0">Team A</button>
+                <button class="team-btn-large" data-team="1">Team B</button>
+                <button class="team-btn-large" data-team="2">Team C</button>
+                <button class="team-btn-large" data-team="3">Team D</button>
+                <button class="team-btn-large" data-team="4">Team E</button>
+                <button class="team-btn-large" data-team="5">Team F</button>
+            </div>
+
+            <div class="buzz-instructions">
+                <p>Tap your team button to buzz in!</p>
+                <p class="small-text">Only the first team to buzz will be accepted.</p>
+            </div>
+        </div>
+
+        <footer class="buzz-footer">
+            <div class="connection-status" id="connection-status">
+                <span class="status-dot"></span>
+                <span class="status-text">Connecting...</span>
+            </div>
+        </footer>
+    </div>
+
+    <script type="module" src="/src/buzz.js"></script>
+</body>
+</html>

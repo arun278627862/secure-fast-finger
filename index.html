@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fast Finger Response - Admin Panel</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="stylesheet" href="/static/style.css?v=20250922202000">
+    
+    <!-- Enhanced responsive admin styles -->
+    <style>
+        /* Admin panel layout fixes - Full screen */
+        body.admin-body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .admin-container {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        
+        /* Make Manual Scoring System section smaller */
+        .scoring-inputs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .scoring-inputs .input-group {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .scoring-inputs .input-group label {
+            font-size: 0.9rem;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .scoring-inputs .score-input {
+            padding: var(--spacing-sm);
+            font-size: 0.9rem;
+            min-height: 40px;
+        }
+        
+        .scoring-inputs .control-buttons {
+            margin-top: var(--spacing-sm);
+        }
+        
+        /* Responsive scoring inputs */
+        @media (max-width: 768px) {
+            .scoring-inputs {
+                grid-template-columns: repeat(2, 1fr);
+                gap: var(--spacing-xs);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .scoring-inputs {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-xs);
+            }
+        }
+        
+        /* Header content layout */
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            position: relative;
+        }
+        
+        .logo {
+            height: 40px;
+            width: auto;
+            flex-shrink: 0;
+            position: fixed;
+            top: 10px;
+            left: 15px;
+            z-index: 1000;
+        }
+        
+        .header-text {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .header-text {
+                position: absolute;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                text-align: center;
+                top: 50%;
+            }
+            
+            .header-text h1 {
+                font-size: 1.5rem;
+                margin: 0;
+            }
+            
+            .header-text .subtitle {
+                font-size: 0.9rem;
+                margin: 0;
+            }
+        }
+        
+        /* Mobile logo positioning */
+        @media (max-width: 768px) {
+            .logo {
+                height: 30px;
+                top: 8px;
+                left: 12px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .logo {
+                height: 25px;
+                top: 6px;
+                left: 10px;
+            }
+            
+            .header-text {
+                position: absolute;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                text-align: center;
+                top: 50%;
+            }
+            
+            .header-text h1 {
+                font-size: 1.2rem;
+                margin: 0;
+            }
+            
+            .header-text .subtitle {
+                font-size: 0.8rem;
+                margin: 0;
+            }
+        }
+        
+        /* Team management section improvements */
+        .team-management-section {
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .team-management-section h2 {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: var(--spacing-sm);
+            margin-bottom: var(--spacing-xl);
+            font-weight: 700;
+            font-size: var(--font-size-xl);
+        }
+        
+        /* Manual scoring section improvements */
+        .manual-scoring-section {
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .manual-scoring-section h2 {
+            color: var(--success-color);
+            border-bottom: 3px solid var(--success-color);
+            padding-bottom: var(--spacing-sm);
+            margin-bottom: var(--spacing-xl);
+            font-weight: 700;
+            font-size: var(--font-size-xl);
+        }
+        
+        /* Form improvements */
+        .form-section {
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .form-section h3 {
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-lg);
+            font-weight: 600;
+            font-size: var(--font-size-lg);
+        }
+        
+        /* Button improvements */
+        .section-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-xl);
+        }
+        
+        @media (min-width: 640px) {
+            .section-buttons {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+        }
+        
+        .section-buttons .btn {
+            flex: 1;
+            min-width: 140px;
+            text-align: center;
+        }
+        
+        @media (min-width: 640px) {
+            .section-buttons .btn {
+                flex: 0 1 auto;
+                min-width: 120px;
+            }
+        }
+        
+        /* Responsive grid improvements */
+        @media (max-width: 767px) {
+            .admin-grid {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-lg);
+            }
+            
+            .admin-section {
+                padding: var(--spacing-lg);
+                min-height: auto;
+            }
+        }
+        
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .admin-grid {
+                grid-template-columns: 2fr 1fr;
+                gap: var(--spacing-xl);
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .admin-grid {
+                grid-template-columns: 3fr 2fr;
+                gap: var(--spacing-xxl);
+            }
+        }
+    </style>
+</head>
+<body class="admin-body">
+    <div class="admin-container">
+        <header class="admin-header">
+            <div class="header-content">
+                <img src="/static/secure-logo.png" alt="Secure Meters" class="logo">
+                <div class="header-text">
+                    <h1>Fast Finger Response</h1>
+                    <p class="subtitle">Admin Panel</p>
+                </div>
+            </div>
+        </header>
+
+        <div class="admin-grid">
+            <!-- Team Management -->
+            <div class="admin-section">
+                <h2>Team Management</h2>
+                <div class="team-inputs">
+                    <div class="input-group">
+                        <label>Team A:</label>
+                        <input type="text" id="team-0" class="team-input" placeholder="Team A">
+                    </div>
+                    <div class="input-group">
+                        <label>Team B:</label>
+                        <input type="text" id="team-1" class="team-input" placeholder="Team B">
+                    </div>
+                    <div class="input-group">
+                        <label>Team C:</label>
+                        <input type="text" id="team-2" class="team-input" placeholder="Team C">
+                    </div>
+                    <div class="input-group">
+                        <label>Team D:</label>
+                        <input type="text" id="team-3" class="team-input" placeholder="Team D">
+                    </div>
+                    <div class="input-group">
+                        <label>Team E:</label>
+                        <input type="text" id="team-4" class="team-input" placeholder="Team E">
+                    </div>
+                    <div class="input-group">
+                        <label>Team F:</label>
+                        <input type="text" id="team-5" class="team-input" placeholder="Team F">
+                    </div>
+                </div>
+                <button id="save-teams" class="btn btn-primary">Save Teams</button>
+            </div>
+
+            <!-- Manual Scoring System -->
+            <div class="admin-section">
+                <h2>Manual Scoring System</h2>
+                <p class="system-description">Enter scores manually and announce winners based on scores</p>
+                <div class="scoring-inputs">
+                    <div class="input-group">
+                        <label>Team A Score:</label>
+                        <input type="number" id="score-0" class="score-input" placeholder="Enter score" min="0" max="100">
+                    </div>
+                    <div class="input-group">
+                        <label>Team B Score:</label>
+                        <input type="number" id="score-1" class="score-input" placeholder="Enter score" min="0" max="100">
+                    </div>
+                    <div class="input-group">
+                        <label>Team C Score:</label>
+                        <input type="number" id="score-2" class="score-input" placeholder="Enter score" min="0" max="100">
+                    </div>
+                    <div class="input-group">
+                        <label>Team D Score:</label>
+                        <input type="number" id="score-3" class="score-input" placeholder="Enter score" min="0" max="100">
+                    </div>
+                    <div class="input-group">
+                        <label>Team E Score:</label>
+                        <input type="number" id="score-4" class="score-input" placeholder="Enter score" min="0" max="100">
+                    </div>
+                    <div class="input-group">
+                        <label>Team F Score:</label>
+                        <input type="number" id="score-5" class="score-input" placeholder="Enter score" min="0" max="100">
+                    </div>
+                </div>
+                <div class="control-buttons">
+                    <button id="submit-scores" class="btn btn-primary">Submit Scores & Announce Winners</button>
+                </div>
+            </div>
+
+            <!-- Game Controls -->
+            <div class="admin-section">
+                <h2>Fast Finger Game Controls</h2>
+                <p class="system-description">Teams buzz in real-time, then manually announce winners</p>
+                <div class="control-buttons">
+                    <button id="start-fastfinger" class="btn btn-success">Start Game</button>
+                    <button id="stop-fastfinger" class="btn btn-danger">Stop Game</button>
+                    <button id="reset-game" class="btn btn-warning">Reset Round</button>
+                    <button id="announce-winners" class="btn btn-primary">Announce Winners</button>
+                </div>
+                <div class="control-buttons">
+                    <button id="open-display" class="btn btn-info">Open Display Screen</button>
+                </div>
+                <div class="control-buttons">
+                    <h3>Single Team Buzz Screens</h3>
+                    <div class="team-buzz-links">
+                        <a href="/buzz/0" target="_blank" class="btn btn-secondary">Team A Buzz</a>
+                        <a href="/buzz/1" target="_blank" class="btn btn-secondary">Team B Buzz</a>
+                        <a href="/buzz/2" target="_blank" class="btn btn-secondary">Team C Buzz</a>
+                        <a href="/buzz/3" target="_blank" class="btn btn-secondary">Team D Buzz</a>
+                        <a href="/buzz/4" target="_blank" class="btn btn-secondary">Team E Buzz</a>
+                        <a href="/buzz/5" target="_blank" class="btn btn-secondary">Team F Buzz</a>
+                    </div>
+                </div>
+                <div class="game-status">
+                    <div class="status-item">
+                        <span class="status-label">Game Status:</span>
+                        <span id="game-status" class="status-value">Inactive</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">First Team:</span>
+                        <span id="first-team" class="status-value">None</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Buzz Buttons -->
+            <div class="admin-section">
+                <h2>Team Buzz-In (Test)</h2>
+                <div class="buzz-buttons">
+                    <button class="buzz-btn" data-team="0">Team A</button>
+                    <button class="buzz-btn" data-team="1">Team B</button>
+                    <button class="buzz-btn" data-team="2">Team C</button>
+                    <button class="buzz-btn" data-team="3">Team D</button>
+                    <button class="buzz-btn" data-team="4">Team E</button>
+                    <button class="buzz-btn" data-team="5">Team F</button>
+                </div>
+                <div class="buzz-links">
+                    <a href="/buzz" target="_blank" class="btn btn-info">Open User Buzz-In Page</a>
+                </div>
+            </div>
+
+            <!-- Game Logs -->
+            <div class="admin-section">
+                <h2>Game Logs</h2>
+                <div class="logs-container">
+                    <div id="logs-list" class="logs-list">
+                        <!-- Logs will be populated here -->
+                    </div>
+                    <div class="logs-controls">
+                        <button id="refresh-logs" class="btn btn-secondary">Refresh Logs</button>
+                        <button id="delete-logs" class="btn btn-danger">Delete All Logs</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="/src/admin.js"></script>
+</body>
+</html>
